@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics, parsers, permissions, status
 from rest_framework.permissions import AllowAny
 from .models import (
     Category, Course, User, Lesson, Tag, Post, Post_category, Comments, Comment, University_info, Livestream_info,
-    Questions, Falcuty, Major, Slider
+    Questions, Falcuty, Major, Slider, Rating, Like
 )
 from .serializers import (
     CategorySerializer, CourseSerializer, LessonSerializer, UserSerializer, LessonDetailSerializer, PostSerializer,
@@ -91,25 +91,25 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         c.save()
 
         return Response(CommentSerializer(c).data, status=status.HTTP_201_CREATED)
-#
-#     @action(methods=['post'], detail=True, url_path='like')
-#     def like(self, request, pk):
-#         lesson = self.get_object()
-#         l, created = Like.objects.get_or_create(lesson=lesson, user=request.user)
-#         if not created:
-#             l.liked = not l.liked
-#         l.save()
-#
-#         return Response(status=status.HTTP_200_OK)
-#
-#     @action(methods=['post'], detail=True, url_path='rating')
-#     def rate(self, request, pk):
-#         lesson = self.get_object()
-#         r, _ = Rating.objects.get_or_create(lesson=lesson, user=request.user)
-#         r.rate = request.data['rate']
-#         r.save()
-#
-#         return Response(status=status.HTTP_200_OK)
+
+    @action(methods=['post'], detail=True, url_path='like')
+    def like(self, request, pk):
+        lesson = self.get_object()
+        l, created = Like.objects.get_or_create(lesson=lesson, user=request.user)
+        if not created:
+            l.liked = not l.liked
+        l.save()
+
+        return Response(status=status.HTTP_200_OK)
+
+    @action(methods=['post'], detail=True, url_path='rating')
+    def rate(self, request, pk):
+        lesson = self.get_object()
+        r, _ = Rating.objects.get_or_create(lesson=lesson, user=request.user)
+        r.rate = request.data['rate']
+        r.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class UserViewSet(viewsets.ModelViewSet,

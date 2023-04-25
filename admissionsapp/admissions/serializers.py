@@ -7,10 +7,10 @@ from rest_framework.serializers import ModelSerializer
 class ImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField(source='image')
 
-    def get_image(self, course):
-        if course.image:
+    def get_image(self, obj):
+        if obj.image:
             request = self.context.get('request')
-            return request.build_absolute_uri('/static/%s' % course.image.name) if request else ''
+            return request.build_absolute_uri('/static/%s' % obj.image.name) if request else ''
 
 
 class CategorySerializer(ImageSerializer):
@@ -46,13 +46,7 @@ class LessonDetailSerializer(LessonSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'username', 'password', 'email', 'avatar']
-        extra_kwargs = {
-            'avatar': {'write_only': 'True'},
-            'password': {'write_only': 'True'}
-        }
+    image = serializers.SerializerMethodField(source='avatar')
 
     def get_image(self, user):
         if user.avatar:
@@ -65,6 +59,14 @@ class UserSerializer(serializers.ModelSerializer):
         u.set_password(validated_data['password'])
         u.save()
         return u
+
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'username', 'password', 'email', 'avatar', 'image']
+        extra_kwargs = {
+            'avatar': {'write_only': 'True'},
+            'password': {'write_only': 'True'}
+        }
 
 
 class CommentSerializer(serializers.ModelSerializer):
