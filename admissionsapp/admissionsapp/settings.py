@@ -24,14 +24,14 @@ SECRET_KEY = 'django-insecure-*c8feudc(i=d_h4bybfy0lfh7fb!&abkm=umgdti4ps^mm24-8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3321-113-161-58-109.ngrok-free.app']
+ALLOWED_HOSTS = ['441e-113-161-58-109.ngrok-free.app']
 
 CORS_ALLOWED_ORIGINS = [
 "https://domain.com",
 "https://api.domain.com",
 "http://localhost:8080",
 "http://127.0.0.1:8000",
-"https://3321-113-161-58-109.ngrok-free.app"
+"https://441e-113-161-58-109.ngrok-free.app"
 ]
 
 ALLOWED_HOSTS = ['*']
