@@ -52,7 +52,8 @@ class Tag(BaseModel):
     def __str__(self):
         return self.name
 
-#
+
+# Comment của lesson
 class Comment(BaseModel):
     content = models.CharField(max_length=255)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
@@ -90,6 +91,7 @@ class Post_category(models.Model):
 
     def _str_(self):
         return self.name
+
 
 #
 class Post(models.Model):
@@ -192,6 +194,3 @@ class Slider(models.Model):
 
     def _str_(self):
         return self.title
-
-
-

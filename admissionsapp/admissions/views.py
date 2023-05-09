@@ -52,7 +52,7 @@ class CourseViewSet(viewsets.ViewSet, generics.ListAPIView):
         return queryset
 
     @action(methods=['get'], detail=True, url_path='lessons')
-    def lessons(self, request, pk):
+    def lessons(self, request):
         c = self.get_object()
         lessons = c.lesson_set.filter(active=True)
 
@@ -74,7 +74,7 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         return [permissions.AllowAny()]
 
     @action(methods=['post'], detail=True, url_path='tags')
-    def assign_tags(self, request, pk):
+    def assign_tags(self, request):
         lesson = self.get_object()
         tags = request.data['tags']
         for t in tags:
@@ -85,7 +85,7 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         return Response(LessonDetailSerializer(lesson, context={'request': request}).data)
 
     @action(methods=['post'], detail=True, url_path='comments')
-    def comments(self, request, pk):
+    def comments(self, request):
         lesson = self.get_object()
         c = Comment(content=request.data['content'], lesson=lesson, user=request.user)
         c.save()
@@ -93,7 +93,7 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         return Response(CommentSerializer(c).data, status=status.HTTP_201_CREATED)
 
     @action(methods=['post'], detail=True, url_path='like')
-    def like(self, request, pk):
+    def like(self, request):
         lesson = self.get_object()
         l, created = Like.objects.get_or_create(lesson=lesson, user=request.user)
         if not created:
@@ -103,7 +103,7 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         return Response(status=status.HTTP_200_OK)
 
     @action(methods=['post'], detail=True, url_path='rating')
-    def rate(self, request, pk):
+    def rate(self, request):
         lesson = self.get_object()
         r, _ = Rating.objects.get_or_create(lesson=lesson, user=request.user)
         r.rate = request.data['rate']
@@ -128,13 +128,14 @@ class UserViewSet(viewsets.ModelViewSet,
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
+    # api chỉnh sửa thông tin current-user
     @action(methods=['get', 'put'], detail=False, url_path='current-user')
     def current_user(self, request):
         u = request.user
         if request.method.__eq__('PUT'):
             for k, v in request.data.items():
                 if k.__eq__('password'):
-                    u.set_password(k)
+                    u.set_password(v)
                 else:
                     setattr(u, k, v)
             u.save()
@@ -363,4 +364,3 @@ class SliderViewSet(viewsets.ModelViewSet):
 
         return Response(data=SliderSerializer(u, context={'request': request}).data,
                         status=status.HTTP_200_OK)
-
